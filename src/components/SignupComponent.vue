@@ -53,8 +53,10 @@ import { ref, onMounted, defineExpose } from 'vue';
 import { useRouter } from 'vue-router';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { initFlowbite } from 'flowbite';
-import { auth } from '../firebase/init.js';
+import { auth } from '../firebase/init.ts';
 import Swal from 'sweetalert2';
+import { doc, setDoc } from "firebase/firestore";
+import { db } from '../firebase/init.ts';
 
 const router = useRouter();
 // const auth = getAuth();
@@ -65,8 +67,17 @@ const password = ref('');
 const handleSignup = () => {
   createUserWithEmailAndPassword(auth, email.value, password.value)
     .then((credential) => {
-      console.log(credential.user);
-      router.push({ name: 'dashboard' });
+      // Save user details in Firestore
+      setDoc(doc(db, "users", credential.user.uid), {
+        uid: credential.user.uid,
+        email: email.value,
+        username: username.value
+      }).then(() => {
+        console.log('User details saved in Firestore');
+        router.push({ name: 'dashboard' });
+      }).catch((error) => {
+        console.error('Error saving user details in Firestore: ', error);
+      });
     })
     .catch((error) => {
       if (error.code === 'auth/email-already-in-use') {
