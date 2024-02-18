@@ -43,7 +43,7 @@
       </div>
       <br>
       <p class="text-gray-200">Contact Number: {{ customer.contactNumber }}</p>
-      <p>Network: {{ customer.telecom }}</p>
+      <p class=" text-gray-200">Network: {{ customer.telecom }}</p>
     </div>
     <div v-if="filteredCustomers.length === 0" class="text-center py-4">
       There's no such customer yet.
