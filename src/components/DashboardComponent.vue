@@ -4,11 +4,13 @@
       class="border-3 border-gray-300 bg-white text-black h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
       type="search" name="search" placeholder="Search">
     <div class="relative" style=" z-index: 2;">
-      <button class="bg-transparent text-blue-500 hover:text-white font-bold rounded" @click="filterOpen = !filterOpen">
+      <button class="bg-transparent text-blue-500 hover:text-white font-bold rounded" @click="filterOpen = !filterOpen"
+        v-click-outside="closeFilter">
         <img src="../assets/filter2.svg" alt="Filter Icon" class="w-8 h-6 ">
       </button>
       <div v-show="filterOpen"
-        class="origin-top-right absolute right-0 mt-2 w-30 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+        class="origin-top-right absolute right-0 mt-2 w-30 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
+        v-click-outside="closeFilter">
         <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
           <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem"
             v-for="telecom in telecoms" :key="telecom" @click="selectedTelecom = telecom; filterOpen = false">
@@ -23,14 +25,16 @@
     <div v-for="(customer, index) in filteredCustomers" :key="index" class="bg-slate-500 rounded-lg p-4 shadow">
 
       <div class="flex justify-between items-center mb-2">
-        <h2 class="text-2xl font-bold">{{ customer.name }}</h2>
+        <h2 class="text-2xl text-w font-bold">{{ customer.name }}</h2>
         <div class="relative inline-block text-left">
           <button class="bg-transparent hover:bg-blue-500 text-blue-500 hover:text-white font-bold py-1 px-2 rounded"
-            @click="openIndex = openIndex === index ? null : index" title="edit details">
+            @click="openIndex = openIndex === index ? null : index" title="edit details"
+            v-click-outside="closeCustomerMenu">
             <img src="../assets/edit.svg" alt="Edit Icon" class="w-4 h-4">
           </button>
           <div v-show="openIndex === index"
-            class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+            class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
+            v-click-outside="closeCustomerMenu">
 
             <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
               <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
@@ -106,12 +110,12 @@
               <select v-model="newCustomer.telecom" name="telecom" id="telecom"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
                 required>
+                <!-- <option value="All">All</option> -->
                 <option value="Talk N text">TNT</option>
                 <option value="Smart">Smart</option>
                 <option value="TM">TM</option>
                 <option value="Globe">Globe</option>
                 <option value="DITO">DITO</option>
-                <!-- Add more options as needed -->
               </select>
             </div>
             <button type="submit"
@@ -130,27 +134,34 @@ import { ref } from 'vue';
 import { onMounted, } from 'vue'
 import { initFlowbite } from 'flowbite'
 import { computed } from 'vue';
+import vClickOutside from 'v-click-outside'
+
+
 
 const filterOpen = ref(false);
-const telecoms = ref(['Globe', 'Smart', 'Talk N Text', 'TM', 'DITO']);
+const telecoms = ref(['All', 'Globe', 'Smart', 'TNT', 'TM', 'DITO']);
 const showModal = ref(false);
 const open = ref(false);
 const editingIndex = ref<number | null>(null);
 const openIndex = ref<number | null>(null);
 const newCustomer = ref({ name: '', contactNumber: '', telecom: '' });
 const search = ref('');
-const selectedTelecom = ref('');
+const selectedTelecom = ref('All');
 
 const customers = ref([
   // Add your customers here
-  { name: 'Carl Michael S. Codog', contactNumber: '09078270767', telecom: 'Globe' },
-  { name: 'Joshua Falguera', contactNumber: '098-765-4321', telecom: 'Smart' },
-  { name: 'Carl Michael S. Codog', contactNumber: '09078270767', telecom: 'Globe' },
+  { name: 'Carl Michael S. Codog', contactNumber: '0907-827-0767', telecom: 'Globe' },
+  { name: 'Joshua Falguera', contactNumber: '0987-654-321', telecom: 'Smart' },
 
 ]);
 const capitalizeWords = (str: string) => {
   return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 };
+
+const formatContactNumber = (number: string | number) => {
+  let numStr = String(number);
+  return numStr.slice(0, 4) + '-' + numStr.slice(4, 7) + '-' + numStr.slice(7);
+}
 
 const editCustomer = (index: number) => {
   newCustomer.value = { ...customers.value[index] };
@@ -175,6 +186,7 @@ const deleteCustomer = (index: number) => {
 const updateCustomer = () => {
   if (editingIndex.value !== null) {
     newCustomer.value.name = capitalizeWords(newCustomer.value.name);
+    newCustomer.value.contactNumber = formatContactNumber(newCustomer.value.contactNumber);
     customers.value[editingIndex.value] = { ...newCustomer.value };
     newCustomer.value = { name: '', contactNumber: '', telecom: '' };
     editingIndex.value = null;
@@ -182,9 +194,9 @@ const updateCustomer = () => {
   }
 };
 
-
 const addCustomer = () => {
   newCustomer.value.name = capitalizeWords(newCustomer.value.name);
+  newCustomer.value.contactNumber = formatContactNumber(newCustomer.value.contactNumber);
   customers.value.push({ ...newCustomer.value });
   newCustomer.value = { name: '', contactNumber: '', telecom: '' };
   toggleModal();
@@ -193,20 +205,28 @@ const addCustomer = () => {
 const toggleModal = () => {
   if (showModal.value) {
     editingIndex.value = null;
+    openIndex.value = null;
+    // Reset newCustomer
+    newCustomer.value = { name: '', contactNumber: '', telecom: '' };
   }
   showModal.value = !showModal.value;
 };
-
 const filteredCustomers = computed(() => {
   return customers.value.filter(customer =>
     (!search.value || customer.name.toLowerCase().includes(search.value.toLowerCase()) ||
       customer.contactNumber.includes(search.value) ||
       customer.telecom.toLowerCase().includes(search.value.toLowerCase())) &&
-    (!selectedTelecom.value || customer.telecom === selectedTelecom.value)
+    (selectedTelecom.value === 'All' || customer.telecom === selectedTelecom.value)
   );
 });
 
+const closeFilter = () => {
+  filterOpen.value = false;
+};
 
+const closeCustomerMenu = () => {
+  openIndex.value = null;
+};
 onMounted(() => {
   initFlowbite();
 });
