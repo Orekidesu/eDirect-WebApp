@@ -130,9 +130,8 @@ import { ref } from 'vue';
 import { computed } from 'vue';
 import { onMounted, onUnmounted } from 'vue';
 import { initFlowbite } from 'flowbite';
-// import { capitalizeWords, formatcontact_number } from './DashboardTS/utils';
+import { capitalizeWords, formatContactNumber } from './DashboardTS/utils';
 import { auth, db } from '../firebase/init'
-// import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, getDoc } from 'firebase/firestore';
 import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, getDoc, query, where } from 'firebase/firestore';
 
 const filterOpen = ref(false);
@@ -175,7 +174,11 @@ const updateCustomer = async () => {
     try {
       await updateDoc(
         doc(db, 'customers', customers.value[editingIndex.value].id),
-        newCustomer.value
+        {
+          name: capitalizeWords(newCustomer.value.name), // Capitalize name before updating
+          contact_number: formatContactNumber(newCustomer.value.contact_number), // Format contact number before updating
+          telecom: newCustomer.value.telecom
+        }
       );
       toggleModal();
     } catch (error) {
@@ -184,11 +187,13 @@ const updateCustomer = async () => {
   }
 };
 
+
+
 const addCustomer = async () => {
   try {
     await addDoc(collection(db, 'customers'), {
-      name: newCustomer.value.name,
-      contact_number: newCustomer.value.contact_number,
+      name: capitalizeWords(newCustomer.value.name), // Capitalize name before adding
+      contact_number: formatContactNumber(newCustomer.value.contact_number), // Format contact number before adding
       telecom: newCustomer.value.telecom,
       added_by: loggedInUserName // Include the logged-in user's username
     });
