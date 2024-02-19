@@ -11,7 +11,7 @@
         class="origin-top-right absolute right-0 mt-2 w-30 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
         <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
           <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem"
-            v-for="telecom in telecoms" :key="telecom" @click="selectedTelecom = telecom">
+            v-for="telecom in telecoms" :key="telecom" @click="selectedTelecom = telecom; filterOpen = false">
             {{ telecom }}
           </a>
         </div>
@@ -106,7 +106,7 @@
               <select v-model="newCustomer.telecom" name="telecom" id="telecom"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
                 required>
-                <option value="Talk 'N text">Talk 'N text</option>
+                <option value="Talk N text">TNT</option>
                 <option value="Smart">Smart</option>
                 <option value="TM">TM</option>
                 <option value="Globe">Globe</option>
@@ -132,7 +132,7 @@ import { initFlowbite } from 'flowbite'
 import { computed } from 'vue';
 
 const filterOpen = ref(false);
-const telecoms = ref(['Globe', 'Smart', 'TNT', 'TM', 'DITO']);
+const telecoms = ref(['Globe', 'Smart', 'Talk N Text', 'TM', 'DITO']);
 const showModal = ref(false);
 const open = ref(false);
 const editingIndex = ref<number | null>(null);
@@ -140,6 +140,17 @@ const openIndex = ref<number | null>(null);
 const newCustomer = ref({ name: '', contactNumber: '', telecom: '' });
 const search = ref('');
 const selectedTelecom = ref('');
+
+const customers = ref([
+  // Add your customers here
+  { name: 'Carl Michael S. Codog', contactNumber: '09078270767', telecom: 'Globe' },
+  { name: 'Joshua Falguera', contactNumber: '098-765-4321', telecom: 'Smart' },
+  { name: 'Carl Michael S. Codog', contactNumber: '09078270767', telecom: 'Globe' },
+
+]);
+const capitalizeWords = (str: string) => {
+  return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+};
 
 const editCustomer = (index: number) => {
   newCustomer.value = { ...customers.value[index] };
@@ -161,16 +172,9 @@ const deleteCustomer = (index: number) => {
   customers.value.splice(index, 1);
 };
 
-const customers = ref([
-  // Add your customers here
-  { name: 'Carl Michael S. Codog', contactNumber: '09078270767', telecom: 'Globe' },
-  { name: 'Joshua Falguera', contactNumber: '098-765-4321', telecom: 'Smart' },
-  { name: 'Carl Michael S. Codog', contactNumber: '09078270767', telecom: 'Globe' },
-
-]);
-
 const updateCustomer = () => {
   if (editingIndex.value !== null) {
+    newCustomer.value.name = capitalizeWords(newCustomer.value.name);
     customers.value[editingIndex.value] = { ...newCustomer.value };
     newCustomer.value = { name: '', contactNumber: '', telecom: '' };
     editingIndex.value = null;
@@ -178,13 +182,18 @@ const updateCustomer = () => {
   }
 };
 
+
 const addCustomer = () => {
+  newCustomer.value.name = capitalizeWords(newCustomer.value.name);
   customers.value.push({ ...newCustomer.value });
   newCustomer.value = { name: '', contactNumber: '', telecom: '' };
   toggleModal();
 };
 
 const toggleModal = () => {
+  if (showModal.value) {
+    editingIndex.value = null;
+  }
   showModal.value = !showModal.value;
 };
 

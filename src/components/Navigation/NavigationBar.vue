@@ -34,8 +34,8 @@
             class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600"
             id="user-dropdown">
             <div class="px-4 py-3">
-              <span class="block text-sm text-gray-900 dark:text-white">Bonnie Green</span>
-              <span class="block text-sm  text-gray-500 truncate dark:text-gray-400">name@flowbite.com</span>
+              <span class="block text-sm text-gray-900 dark:text-white">{{ user?.username }}</span>
+              <span class="block text-sm  text-gray-500 truncate dark:text-gray-400">{{ user?.email }}</span>
             </div>
             <ul class="py-2" aria-labelledby="user-menu-button">
               <li>
@@ -57,17 +57,31 @@
 
 
 <script setup lang = 'ts'>
-import { onMounted, ref, defineExpose } from 'vue'
+import { onMounted, ref, defineExpose, Ref } from 'vue'
 import { initFlowbite } from 'flowbite'
 import { useRoute, useRouter } from 'vue-router'
-import { signOut } from 'firebase/auth';
-import { auth } from '../../firebase/init.ts';
+import { signOut, onAuthStateChanged } from 'firebase/auth';
+import { auth, db } from '../../firebase/init.ts';
+import { doc, getDoc, DocumentData } from 'firebase/firestore';
 import Swal from 'sweetalert2';
 const route = useRoute()
 const router = useRouter()
 const darkMode = ref(getDarkMode());
 
 const body = document.querySelector('body');
+
+let user: Ref<DocumentData | null> = ref(null);
+
+onAuthStateChanged(auth, (currentUser) => {
+  if (currentUser) {
+    const docRef = doc(db, 'users', currentUser.uid);
+    getDoc(docRef).then((docSnapshot) => {
+      if (docSnapshot.exists()) {
+        user.value = docSnapshot.data();
+      }
+    });
+  }
+});
 
 const handleSignOut = () => {
   Swal.fire({
