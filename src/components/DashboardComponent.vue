@@ -4,13 +4,11 @@
       class="border-3 border-gray-300 bg-white text-black h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
       type="search" name="search" placeholder="Search">
     <div class="relative" style=" z-index: 2;">
-      <button class="bg-transparent text-blue-500 hover:text-white font-bold rounded" @click="filterOpen = !filterOpen"
-        v-click-outside="closeFilter">
+      <button class="bg-transparent text-blue-500 hover:text-white font-bold rounded" @click="filterOpen = !filterOpen">
         <img src="../assets/filter2.svg" alt="Filter Icon" class="w-8 h-6 ">
       </button>
       <div v-show="filterOpen"
-        class="origin-top-right absolute right-0 mt-2 w-30 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
-        v-click-outside="closeFilter">
+        class="origin-top-right absolute right-0 mt-2 w-30 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
         <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
           <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem"
             v-for="telecom in telecoms" :key="telecom" @click="selectedTelecom = telecom; filterOpen = false">
@@ -28,13 +26,11 @@
         <h2 class="text-2xl text-w font-bold">{{ customer.name }}</h2>
         <div class="relative inline-block text-left">
           <button class="bg-transparent hover:bg-blue-500 text-blue-500 hover:text-white font-bold py-1 px-2 rounded"
-            @click="openIndex = openIndex === index ? null : index" title="edit details"
-            v-click-outside="closeCustomerMenu">
+            @click="openIndex = openIndex === index ? null : index" title="edit details">
             <img src="../assets/edit.svg" alt="Edit Icon" class="w-4 h-4">
           </button>
           <div v-show="openIndex === index"
-            class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
-            v-click-outside="closeCustomerMenu">
+            class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
 
             <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
               <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
@@ -134,7 +130,7 @@ import { ref } from 'vue';
 import { onMounted, } from 'vue'
 import { initFlowbite } from 'flowbite'
 import { computed } from 'vue';
-import vClickOutside from 'v-click-outside'
+import { capitalizeWords, formatContactNumber } from './DashboardTS/utils';
 
 
 
@@ -154,14 +150,6 @@ const customers = ref([
   { name: 'Joshua Falguera', contactNumber: '0987-654-321', telecom: 'Smart' },
 
 ]);
-const capitalizeWords = (str: string) => {
-  return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-};
-
-const formatContactNumber = (number: string | number) => {
-  let numStr = String(number);
-  return numStr.slice(0, 4) + '-' + numStr.slice(4, 7) + '-' + numStr.slice(7);
-}
 
 const editCustomer = (index: number) => {
   newCustomer.value = { ...customers.value[index] };
@@ -220,13 +208,6 @@ const filteredCustomers = computed(() => {
   );
 });
 
-const closeFilter = () => {
-  filterOpen.value = false;
-};
-
-const closeCustomerMenu = () => {
-  openIndex.value = null;
-};
 onMounted(() => {
   initFlowbite();
 });
