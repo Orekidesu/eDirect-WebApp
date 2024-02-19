@@ -42,7 +42,7 @@
         </div>
       </div>
       <br>
-      <p class="text-gray-200">Contact Number: {{ customer.contactNumber }}</p>
+      <p class="text-gray-200">Contact Number: {{ customer.contact_number }}</p>
       <p class=" text-gray-200">Network: {{ customer.telecom }}</p>
     </div>
     <div v-if="filteredCustomers.length === 0" class="text-center py-4">
@@ -95,9 +95,9 @@
                 placeholder="Enter  Name" required />
             </div>
             <div>
-              <label for="contactNumber" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Contact
+              <label for="contact_number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Contact
                 Number</label>
-              <input v-model="newCustomer.contactNumber" type="tel" name="contactNumber" id="contactNumber"
+              <input v-model="newCustomer.contact_number" type="tel" name="contact_number" id="contact_number"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                 placeholder="09XXXXXXXXX" required />
             </div>
@@ -127,29 +127,24 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { onMounted, } from 'vue'
-import { initFlowbite } from 'flowbite'
 import { computed } from 'vue';
-import { capitalizeWords, formatContactNumber } from './DashboardTS/utils';
-
-
+import { onMounted, onUnmounted } from 'vue';
+import { initFlowbite } from 'flowbite';
+// import { capitalizeWords, formatcontact_number } from './DashboardTS/utils';
+import { auth, db } from '../firebase/init'
+// import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, getDoc } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, getDoc, query, where } from 'firebase/firestore';
 
 const filterOpen = ref(false);
 const telecoms = ref(['All', 'Globe', 'Smart', 'TNT', 'TM', 'DITO']);
 const showModal = ref(false);
-const open = ref(false);
 const editingIndex = ref<number | null>(null);
 const openIndex = ref<number | null>(null);
-const newCustomer = ref({ name: '', contactNumber: '', telecom: '' });
+const newCustomer = ref({ name: '', contact_number: '', telecom: '' });
 const search = ref('');
 const selectedTelecom = ref('All');
-
-const customers = ref([
-  // Add your customers here
-  { name: 'Carl Michael S. Codog', contactNumber: '0907-827-0767', telecom: 'Globe' },
-  { name: 'Joshua Falguera', contactNumber: '0987-654-321', telecom: 'Smart' },
-
-]);
+const customers = ref<any[]>([]);
+let loggedInUserName = ''; // Initialize loggedInUserName
 
 const editCustomer = (index: number) => {
   newCustomer.value = { ...customers.value[index] };
@@ -157,58 +152,104 @@ const editCustomer = (index: number) => {
   toggleModal();
 };
 
-const submitForm = () => {
+const submitForm = async () => {
   if (editingIndex.value === null) {
-    addCustomer();
+    await addCustomer();
   } else {
-    updateCustomer();
+    await updateCustomer();
   }
-  open.value = false; // Add this line
+  showModal.value = false;
   openIndex.value = null;
 };
 
-const deleteCustomer = (index: number) => {
-  customers.value.splice(index, 1);
-};
-
-const updateCustomer = () => {
-  if (editingIndex.value !== null) {
-    newCustomer.value.name = capitalizeWords(newCustomer.value.name);
-    newCustomer.value.contactNumber = formatContactNumber(newCustomer.value.contactNumber);
-    customers.value[editingIndex.value] = { ...newCustomer.value };
-    newCustomer.value = { name: '', contactNumber: '', telecom: '' };
-    editingIndex.value = null;
-    toggleModal();
+const deleteCustomer = async (index: number) => {
+  try {
+    await deleteDoc(doc(db, 'customers', customers.value[index].id));
+  } catch (error) {
+    console.error('Error deleting document: ', error);
   }
 };
 
-const addCustomer = () => {
-  newCustomer.value.name = capitalizeWords(newCustomer.value.name);
-  newCustomer.value.contactNumber = formatContactNumber(newCustomer.value.contactNumber);
-  customers.value.push({ ...newCustomer.value });
-  newCustomer.value = { name: '', contactNumber: '', telecom: '' };
-  toggleModal();
+const updateCustomer = async () => {
+  if (editingIndex.value !== null && customers.value[editingIndex.value]?.id) {
+    try {
+      await updateDoc(
+        doc(db, 'customers', customers.value[editingIndex.value].id),
+        newCustomer.value
+      );
+      toggleModal();
+    } catch (error) {
+      console.error('Error updating document: ', error);
+    }
+  }
+};
+
+const addCustomer = async () => {
+  try {
+    await addDoc(collection(db, 'customers'), {
+      name: newCustomer.value.name,
+      contact_number: newCustomer.value.contact_number,
+      telecom: newCustomer.value.telecom,
+      added_by: loggedInUserName // Include the logged-in user's username
+    });
+    toggleModal();
+  } catch (error) {
+    console.error('Error adding document: ', error);
+  }
 };
 
 const toggleModal = () => {
   if (showModal.value) {
     editingIndex.value = null;
     openIndex.value = null;
-    // Reset newCustomer
-    newCustomer.value = { name: '', contactNumber: '', telecom: '' };
+    newCustomer.value = { name: '', contact_number: '', telecom: '' };
   }
   showModal.value = !showModal.value;
 };
+
 const filteredCustomers = computed(() => {
   return customers.value.filter(customer =>
     (!search.value || customer.name.toLowerCase().includes(search.value.toLowerCase()) ||
-      customer.contactNumber.includes(search.value) ||
+      customer.contact_number.includes(search.value) ||
       customer.telecom.toLowerCase().includes(search.value.toLowerCase())) &&
     (selectedTelecom.value === 'All' || customer.telecom === selectedTelecom.value)
   );
 });
 
-onMounted(() => {
+onMounted(async () => {
   initFlowbite();
+
+  const user = auth.currentUser;
+
+  if (user) {
+    try {
+      const userSnapshot = await getDoc(doc(db, 'users', user.uid));
+      if (userSnapshot.exists()) {
+        loggedInUserName = userSnapshot.data()?.username;
+      } else {
+        console.error('User document does not exist.');
+        // Handle the case where the user document doesn't exist
+      }
+    } catch (error) {
+      console.error('Error fetching user document:', error);
+      // Handle the error appropriately
+    }
+  } else {
+    console.error('No user logged in.');
+    return; // If no user is logged in, we don't need to fetch the customers
+  }
+
+  const customersCollection = collection(db, 'customers');
+  const q = query(customersCollection, where('added_by', '==', loggedInUserName));
+
+  const unsubscribe = onSnapshot(q, (snapshot) => {
+    customers.value = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    console.log(customers.value); // Print all customers in the console
+  });
+
+  onUnmounted(unsubscribe);
 });
+
 </script>
+
+
