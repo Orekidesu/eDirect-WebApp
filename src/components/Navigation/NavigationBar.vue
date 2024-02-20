@@ -12,7 +12,7 @@
 
       <div class="flex items-center">
         <button class="flex items-center mr-10" @click="toggleDarkMode">
-          <span v-if="!darkMode" class="material-symbols-outlined text-slate-800 dark:text-white mr-10">dark_mode</span>
+          <span v-if="!darkMode" class="material-symbols-outlined text-slate-800  dark:text-white mr-10">dark_mode</span>
           <span v-else
             class="material-symbols-outlined  text-slate-800 text-white dark:text-white mr-10">light_mode</span>
         </button>
