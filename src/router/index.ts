@@ -29,11 +29,6 @@ const routes: RouteRecordRaw[] = [
 		}
 	},
 	{
-		path: '/about',
-		name: 'about',
-		component: About
-	},
-	{
 		path: '/signup',
 		name: 'signup',
 		component: Signup
