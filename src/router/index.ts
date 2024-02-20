@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import Login from '@/views/LoginView.vue';
 import Dashboard from '@/views/DashboardView.vue';
-import About from '@/views/AboutView.vue';
 import Signup from '@/views/SignupView.vue';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase/init.js';
