@@ -1,5 +1,6 @@
 <template>
-  <div class="flex items-center justify-center my-5 px-20">
+  <!-- <div class="flex items-center justify-center my-5 px-20"> -->
+  <div class="flex items-center justify-center my-5">
     <input v-model="search"
       class="border-3 border-gray-300 bg-white text-black h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
       type="search" name="search" placeholder="Search">

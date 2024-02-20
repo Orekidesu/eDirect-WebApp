@@ -1,8 +1,8 @@
 <template>
-  <nav class="bg-gray-900 border-gray-200 dark:bg-gray-900 text-white h-16  ">
+  <nav class="bg-gray-900 border-gray-200 dark:bg-gray-900 text-white h-16   ">
     <!-- <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4"> -->
     <div
-      :class="route.name !== 'login' && route.name !== 'signup' ? 'max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4' : 'max-w-screen-xl flex flex-wrap items-center justify-end mx-auto p-4'">
+      :class="route.name !== 'login' && route.name !== 'signup' ? ' max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4' : ' w-screen max-w-screen-xl flex flex-wrap items-center justify-end mx-auto p-4'">
       <a v-if="route.name !== 'login'" href="" class="flex items-center space-x-3 rtl:space-x-reverse">
         <!-- <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">eDirect</span> -->
 
