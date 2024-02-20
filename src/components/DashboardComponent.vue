@@ -5,7 +5,7 @@
       type="search" name="search" placeholder="Search">
     <div class="relative" style=" z-index: 2;">
       <button class="bg-transparent text-blue-500 hover:text-white font-bold rounded" @click="filterOpen = !filterOpen">
-        <img src="../assets/filter2.svg" alt="Filter Icon" class="w-8 h-6 ">
+        <img src="../assets/filter2.svg" alt="Filter Icon" class="w-8 h-6">
       </button>
       <div v-show="filterOpen"
         class="origin-top-right absolute right-0 mt-2 w-30 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
@@ -23,7 +23,7 @@
     <div v-for="(customer, index) in filteredCustomers" :key="index" class="bg-slate-500 rounded-lg p-4 shadow">
 
       <div class="flex justify-between items-center mb-2">
-        <h2 class="text-2xl text-w font-bold">{{ customer.name }}</h2>
+        <h2 class="text-2xl text-white font-bold">{{ customer.name }}</h2>
         <div class="relative inline-block text-left">
           <button class="bg-transparent hover:bg-blue-500 text-blue-500 hover:text-white font-bold py-1 px-2 rounded"
             @click="openIndex = openIndex === index ? null : index" title="edit details">
