@@ -1,5 +1,5 @@
 <template>
-  <nav class="bg-gray-900 border-gray-200 dark:bg-gray-900 text-white h-16   ">
+  <nav class="border-b border-slate-900 dark:bg-gray-900 text-gray-200 dark:text-white h-16   ">
     <!-- <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4"> -->
     <div
       :class="route.name !== 'login' && route.name !== 'signup' ? ' max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4' : ' w-screen max-w-screen-xl flex flex-wrap items-center justify-end mx-auto p-4'">
@@ -12,8 +12,7 @@
 
       <div class="flex items-center">
         <button class="flex items-center mr-10" @click="toggleDarkMode">
-          <span v-if="!darkMode"
-            class="material-symbols-outlined text-slate-800 text-white dark:text-white mr-10">dark_mode</span>
+          <span v-if="!darkMode" class="material-symbols-outlined text-slate-800 dark:text-white mr-10">dark_mode</span>
           <span v-else
             class="material-symbols-outlined  text-slate-800 text-white dark:text-white mr-10">light_mode</span>
         </button>
