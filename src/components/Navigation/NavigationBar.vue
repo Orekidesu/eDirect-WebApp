@@ -1,5 +1,5 @@
 <template>
-  <nav class="border-b border-slate-900 dark:bg-gray-900 text-gray-200 dark:text-white h-16   ">
+  <nav class="border-b-[#070F2C] dark:bg-[#1B1A56] text-gray-200 dark:text-white h-16   ">
     <!-- <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4"> -->
     <div
       :class="route.name !== 'login' && route.name !== 'signup' ? ' max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4' : ' w-screen max-w-screen-xl flex flex-wrap items-center justify-end mx-auto p-4'">
