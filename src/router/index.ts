@@ -7,12 +7,12 @@ import { auth } from '../firebase/init.js';
 
 const routes: RouteRecordRaw[] = [
 	{
-		path: '/',
+		path: './',
 		name: 'login',
 		component: Login
 	},
 	{
-		path: '/dashboard',
+		path: './dashboard',
 		name: 'dashboard',
 		component: Dashboard,
 		beforeEnter: (_to, _from, next) => {
@@ -28,7 +28,7 @@ const routes: RouteRecordRaw[] = [
 		}
 	},
 	{
-		path: '/signup',
+		path: './signup',
 		name: 'signup',
 		component: Signup
 	}
