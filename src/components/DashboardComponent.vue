@@ -1,5 +1,6 @@
 <template>
   <!-- <div class="flex items-center justify-center my-5 px-20"> -->
+
   <div class="flex items-center justify-center my-5">
     <input v-model="search"
       class="border-3 border-gray-300 bg-white text-black h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
@@ -20,7 +21,10 @@
     </div>
   </div>
   <!-- ================================================ LIST OF CUSTOMERS AREA ================================================  -->
-  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 px-15 overflow-y-auto max-h-screen justify-center">
+  <div v-if="isLoading" class="flex justify-center items-center pt-10">
+    <div class="animate-spin rounded-full h-20 w-20 border-t-2 border-b-2 dark:border-white border-slate-900"></div>
+  </div>
+  <div v-else class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 px-15 overflow-y-auto max-h-screen justify-center">
     <div v-for="(customer, index) in filteredCustomers" :key="index" class="bg-slate-500 rounded-lg p-4 shadow">
 
       <div class="flex justify-between items-center mb-2">
@@ -146,6 +150,7 @@ const selectedTelecom = ref('All');
 const customers = ref<any[]>([]);
 let loggedInUserName = ''; // Initialize loggedInUserName
 let unsubscribe: () => void;
+const isLoading = ref(true);
 
 const editCustomer = (index: number) => {
   newCustomer.value = { ...customers.value[index] };
@@ -251,6 +256,7 @@ onMounted(async () => {
 
   unsubscribe = onSnapshot(q, (snapshot) => {
     customers.value = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    isLoading.value = false; // Add this line
     console.log(customers.value); // Print all customers in the console
   });
 

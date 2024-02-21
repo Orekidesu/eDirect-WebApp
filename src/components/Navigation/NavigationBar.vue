@@ -3,11 +3,11 @@
     <!-- <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4"> -->
     <div
       :class="route.name !== 'login' && route.name !== 'signup' ? ' max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4' : ' w-screen max-w-screen-xl flex flex-wrap items-center justify-end mx-auto p-4'">
-      <a v-if="route.name !== 'login'" href="" class="flex items-center space-x-3 rtl:space-x-reverse">
-        <!-- <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">eDirect</span> -->
-
+      <a v-if="route.name !== 'login' && route.name !== 'signup'" href=""
+        class="flex items-center space-x-3 rtl:space-x-reverse">
         <span
-          :class="route.name !== 'login' && route.name !== 'signup' ? 'self-center text-2xl font-semibold whitespace-nowrap dark:text-white' : 'self-center text-2xl font-semibold whitespace-nowra text-gray-900'">eDirect</span>
+          :class="route.name !== 'login' && route.name !== 'signup' ? 'self-center text-2xl font-semibold whitespace-nowrap text-[#1b1a56] dark:text-white' : 'self-center text-2xl font-semibold whitespace-nowra text-gray-900'">eDirect</span>
+
       </a>
 
       <div class="flex items-center">
@@ -65,6 +65,8 @@ import Swal from 'sweetalert2';
 
 const route = useRoute();
 const router = useRouter();
+
+
 let body: HTMLElement | null;
 let darkMode = ref(getDarkMode());
 

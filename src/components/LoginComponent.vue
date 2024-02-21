@@ -63,6 +63,7 @@ import { useRouter } from 'vue-router';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { initFlowbite } from 'flowbite';
 import { auth } from '../firebase/init.js';
+import Swal from 'sweetalert2';
 
 const router = useRouter();
 let email = ref('');
@@ -74,8 +75,15 @@ const handleLogin = () => {
       console.log(credential.user);
       router.push({ name: 'dashboard' });
     })
-    .catch((error) => {
-      console.log(error.message);
+    .catch((_error) => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Invalid email or password! Please try again.',
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        width: '300px',
+      });
     });
 };
 
