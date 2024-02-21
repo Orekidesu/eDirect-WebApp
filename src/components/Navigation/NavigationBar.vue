@@ -65,9 +65,9 @@ import Swal from 'sweetalert2';
 
 const route = useRoute();
 const router = useRouter();
+let body: HTMLElement | null;
 let darkMode = ref(getDarkMode());
 
-let body: HTMLElement | null;
 
 
 let user: Ref<DocumentData | null> = ref(null);
