@@ -65,8 +65,8 @@ import { initFlowbite } from 'flowbite';
 import { auth } from '../firebase/init.js';
 
 const router = useRouter();
-const email = ref('');
-const password = ref('');
+let email = ref('');
+let password = ref('');
 
 const handleLogin = () => {
   signInWithEmailAndPassword(auth, email.value, password.value)

@@ -59,10 +59,9 @@ import { doc, setDoc } from "firebase/firestore";
 import { db } from '../firebase/init.ts';
 
 const router = useRouter();
-// const auth = getAuth();
-const username = ref('');
-const email = ref('');
-const password = ref('');
+let username = ref('');
+let email = ref('');
+let password = ref('');
 
 const handleSignup = () => {
   createUserWithEmailAndPassword(auth, email.value, password.value)

@@ -145,6 +145,7 @@ const search = ref('');
 const selectedTelecom = ref('All');
 const customers = ref<any[]>([]);
 let loggedInUserName = ''; // Initialize loggedInUserName
+let unsubscribe: () => void;
 
 const editCustomer = (index: number) => {
   newCustomer.value = { ...customers.value[index] };
@@ -248,12 +249,18 @@ onMounted(async () => {
   const customersCollection = collection(db, 'customers');
   const q = query(customersCollection, where('added_by', '==', loggedInUserName));
 
-  const unsubscribe = onSnapshot(q, (snapshot) => {
+  unsubscribe = onSnapshot(q, (snapshot) => {
     customers.value = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     console.log(customers.value); // Print all customers in the console
   });
 
-  onUnmounted(unsubscribe);
+  // onUnmounted(unsubscribe);
+});
+
+onUnmounted(() => {
+  if (unsubscribe) {
+    unsubscribe();
+  }
 });
 
 </script>

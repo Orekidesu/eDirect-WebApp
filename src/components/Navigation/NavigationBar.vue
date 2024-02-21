@@ -62,9 +62,10 @@ import { signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth, db } from '../../firebase/init.ts';
 import { doc, getDoc, DocumentData } from 'firebase/firestore';
 import Swal from 'sweetalert2';
-const route = useRoute()
-const router = useRouter()
-const darkMode = ref(getDarkMode());
+
+const route = useRoute();
+const router = useRouter();
+let darkMode = ref(getDarkMode());
 
 const body = document.querySelector('body');
 

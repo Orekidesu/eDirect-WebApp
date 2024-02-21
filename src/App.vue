@@ -1,10 +1,7 @@
 <script setup lang="ts">
-// import { computed } from 'vue'
-// import { useRoute } from 'vue-router'
 import NavigationBar from './components/Navigation/NavigationBar.vue'
 
-// const route = useRoute()
-// const routeName = computed(() => route.name)
+
 </script>
 
 <template>
