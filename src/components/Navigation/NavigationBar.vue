@@ -67,7 +67,8 @@ const route = useRoute();
 const router = useRouter();
 let darkMode = ref(getDarkMode());
 
-let body: HTMLBodyElement | null;
+let body: HTMLElement | null;
+
 
 let user: Ref<DocumentData | null> = ref(null);
 
@@ -106,26 +107,24 @@ const handleSignOut = () => {
   })
 };
 
+onMounted(() => {
+  body = document.querySelector('body');
+  initFlowbite();
+  body?.classList.toggle('dark', darkMode.value);
+})
+
+
 function getDarkMode() {
-  // Try to get the dark mode setting from localStorage
-  const storedDarkMode = localStorage.getItem('darkMode');
-
-  // If the setting exists, return it (converted to a boolean)
-  if (storedDarkMode !== null) {
-    return storedDarkMode === 'true';
-  }
-
-  // Otherwise, determine the setting based on the body class
+  const savedDarkMode = localStorage.getItem('darkMode');
+  const hasSavedDarkMode = typeof savedDarkMode === 'string';
   const isDark = body && body.classList.contains('dark');
-  return isDark ?? false;
+  return hasSavedDarkMode ? savedDarkMode === 'true' : isDark ?? false;
 }
+
 
 function toggleDarkMode() {
   darkMode.value = !darkMode.value;
-
-  // Store the new setting in localStorage
-  localStorage.setItem('darkMode', darkMode.value.toString());
-
+  localStorage.setItem('darkMode', String(darkMode.value));
   if (body) {
     body.classList.toggle('dark', darkMode.value);
   }
@@ -135,11 +134,5 @@ defineExpose({
   toggleDarkMode,
   handleSignOut,
 });
-// initialize components based on data attribute selectors
-onMounted(() => {
-  body = document.querySelector('body');
-  initFlowbite();
-  body?.classList.toggle('dark', darkMode.value);
-})
 
 </script>
