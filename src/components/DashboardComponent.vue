@@ -192,6 +192,12 @@ const deleteCustomer = async (index: number) => {
 const updateCustomer = async () => {
   if (editingIndex.value !== null && customers.value[editingIndex.value]?.id) {
     try {
+      const querySnapshot = await getDocs(query(collection(db, 'customers'), where('contact_number', '==', formatContactNumber(newCustomer.value.contact_number)), where('added_by', '==', loggedInUserName)));
+      if (!querySnapshot.empty) {
+        alert('This number already exists');
+        return;
+      }
+
       await updateDoc(
         doc(db, 'customers', customers.value[editingIndex.value].id),
         {
@@ -212,12 +218,12 @@ const updateCustomer = async () => {
 
 const addCustomer = async () => {
   try {
-    // Query the database for the contact number
-    const querySnapshot = await getDocs(query(collection(db, 'customers'), where('contact_number', '==', formatContactNumber(newCustomer.value.contact_number))));
+    // Query the database for the contact number added by the current user
+    const querySnapshot = await getDocs(query(collection(db, 'customers'), where('contact_number', '==', formatContactNumber(newCustomer.value.contact_number)), where('added_by', '==', loggedInUserName)));
 
     // If the number exists, alert the user and stop the function
     if (!querySnapshot.empty) {
-      alert('This number already exists in the database.');
+      alert('This number already exists');
       return;
     }
 
