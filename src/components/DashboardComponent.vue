@@ -155,7 +155,7 @@ import { capitalizeWords, formatContactNumber } from './DashboardTS/utils';
 import { auth, db } from '../firebase/init'
 import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, getDoc, query, where, getDocs } from 'firebase/firestore';
 import Swal from 'sweetalert2';
-import firebase from 'firebase/compat/app';
+
 
 const filterOpen = ref(false);
 const telecoms = ref(['All', 'Globe', 'Smart', 'TNT', 'TM', 'DITO']);
@@ -204,7 +204,7 @@ const updateCustomer = async () => {
       const querySnapshot = await getDocs(query(collection(db, 'customers'),
         where('contact_number', '==', formatContactNumber(newCustomer.value.contact_number)),
         where('added_by', '==', loggedInUserName),
-        where(firebase.firestore.FieldPath.documentId(), '!=', currentCustomerId)
+        where('__name__', '!=', currentCustomerId)
       ));
 
       if (!querySnapshot.empty) {
