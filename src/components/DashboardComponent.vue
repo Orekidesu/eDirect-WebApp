@@ -57,7 +57,12 @@
         </div>
       </div>
       <br>
-      <p class="">Contact No.: {{ customer.contact_number }}</p>
+      <div class="flex flex-row justify-between">
+        <p class="">Contact No.: {{ customer.contact_number }}</p>
+        <button class="material-symbols-outlined" @click="copyToClipboard(customer.contact_number)">
+          content_copy
+        </button>
+      </div>
       <p class="">Telecom: {{ customer.telecom }}</p>
     </div>
     <div v-if="filteredCustomers.length === 0" class="text-center py-4">
@@ -142,6 +147,7 @@
         </div>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -155,6 +161,8 @@ import { capitalizeWords, formatContactNumber } from './DashboardTS/utils';
 import { auth, db } from '../firebase/init'
 import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, getDoc, query, where, getDocs } from 'firebase/firestore';
 import Swal from 'sweetalert2';
+import { useToast } from '@/components/ui/toast/use-toast'
+
 
 
 const filterOpen = ref(false);
@@ -169,6 +177,7 @@ const customers = ref<any[]>([]);
 let loggedInUserName = ''; // Initialize loggedInUserName
 let unsubscribe: () => void;
 const isLoading = ref(true);
+const { toast } = useToast()
 
 const editCustomer = (id: string) => {
   const customer = customers.value.find(customer => customer.id === id);
@@ -295,6 +304,19 @@ const filteredCustomers = computed(() => {
       return 0; // names must be equal
     });
 });
+const copyToClipboard = (text: string) => {
+  const textWithoutHyphens = text.replace(/-/g, '');
+  navigator.clipboard.writeText(textWithoutHyphens).then(() => {
+    toast({
+      title: 'Success',
+      description: 'Copied to clipboard',
+      action: () => console.log('Toast clicked'),
+      open: true,
+    });
+  }, (err) => {
+    console.error('Could not copy text: ', err);
+  });
+};
 
 onMounted(async () => {
   initFlowbite();
@@ -325,7 +347,7 @@ onMounted(async () => {
   unsubscribe = onSnapshot(q, (snapshot) => {
     customers.value = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     isLoading.value = false; // Add this line
-    console.log(customers.value); // Print all customers in the console
+    // console.log(customers.value); // Print all customers in the console
   });
 
   // onUnmounted(unsubscribe);
