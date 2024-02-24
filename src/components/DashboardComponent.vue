@@ -33,7 +33,10 @@
       class="rounded-lg p-4 shadow border-2 bg-secondary text-secondary-foreground">
 
       <div class="flex justify-between items-center mb-2">
-        <h2 class="text-2xl font-bold">{{ customer.last_name }}<span>, {{ customer.first_name }} </span></h2>
+        <h2 class="text-2xl font-bold">
+          {{ customer.last_name ? customer.last_name + ',' : '' }}
+          <span>{{ customer.first_name }}</span>
+        </h2>
         <div class="relative inline-block text-left">
           <button class=" font-bold py-1 px-2 rounded bg-transparent"
             @click="openIndex = openIndex === index ? null : index" title="edit details">
@@ -46,9 +49,9 @@
 
             <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
               <a href="#" class="block px-4 py-2 text-sm hover:bg-primary hover:text-primary-foreground " role="menuitem"
-                @click="editCustomer(index)">Edit</a>
+                @click="editCustomer(customer.id)">Edit</a>
               <a href="#" class="block px-4 py-2 text-sm hover:bg-primary hover:text-primary-foreground" role="menuitem"
-                @click="deleteCustomer(index)">Delete</a>
+                @click="deleteCustomer(customer.id)">Delete</a>
             </div>
           </div>
         </div>
@@ -108,7 +111,7 @@
                 <label for="last_name" class="block mb-2 text-sm font-medium">Last Name</label>
                 <input v-model="newCustomer.last_name" type="text" name="name" id="name"
                   class="bg-transparent border border-primary sm:text-sm rounded-lg  block w-full p-2.5 focus:ring focus:border-accent"
-                  placeholder="Enter  Last Name" required />
+                  placeholder="Enter  Last Name" />
               </div>
             </div>
             <div>
@@ -166,9 +169,12 @@ let loggedInUserName = ''; // Initialize loggedInUserName
 let unsubscribe: () => void;
 const isLoading = ref(true);
 
-const editCustomer = (index: number) => {
-  newCustomer.value = { ...customers.value[index] };
-  editingIndex.value = index;
+const editCustomer = (id: string) => {
+  const customer = customers.value.find(customer => customer.id === id);
+  if (customer) {
+    newCustomer.value = { ...customer };
+    editingIndex.value = customers.value.findIndex(customer => customer.id === id);
+  }
   toggleModal();
 };
 
@@ -182,9 +188,9 @@ const submitForm = async () => {
   openIndex.value = null;
 };
 
-const deleteCustomer = async (index: number) => {
+const deleteCustomer = async (id: string) => {
   try {
-    await deleteDoc(doc(db, 'customers', customers.value[index].id));
+    await deleteDoc(doc(db, 'customers', id));
   } catch (error) {
     console.error('Error deleting document: ', error);
   }
