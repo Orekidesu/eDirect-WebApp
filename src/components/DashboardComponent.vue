@@ -126,7 +126,7 @@
               <select v-model="newCustomer.telecom" name="telecom" id="telecom"
                 class="bg-accent border text-sm rounded-lg  block w-full p-2.5" required>
                 <!-- <option value="All">All</option> -->
-                <option value="Talk N text">TNT</option>
+                <option value="Talk N Text">TNT</option>
                 <option value="Smart">Smart</option>
                 <option value="TM">TM</option>
                 <option value="Globe">Globe</option>
@@ -281,7 +281,7 @@ const filteredCustomers = computed(() => {
       (!search.value || customer.first_name.toLowerCase().includes(search.value.toLowerCase()) || customer.last_name.toLowerCase().includes(search.value.toLowerCase()) ||
         customer.contact_number.includes(search.value) ||
         customer.telecom.toLowerCase().includes(search.value.toLowerCase())) &&
-      (selectedTelecom.value === 'All' || customer.telecom === selectedTelecom.value)
+      (selectedTelecom.value === 'All' || customer.telecom === (selectedTelecom.value === 'TNT' ? 'Talk N Text' : selectedTelecom.value))
     )
     .sort((a, b) => {
       let nameA = a.last_name.toUpperCase(); // ignore upper and lowercase
