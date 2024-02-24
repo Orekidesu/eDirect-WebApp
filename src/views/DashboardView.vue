@@ -4,7 +4,7 @@ import Dashboard from '@/components/DashboardComponent.vue'
 </script>
 
 <template class="h-100">
-  <main>
+  <main class="">
     <Dashboard />
   </main>
 </template>

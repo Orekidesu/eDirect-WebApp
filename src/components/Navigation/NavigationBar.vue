@@ -1,26 +1,24 @@
 <template>
-  <nav class="border-b-[#070F2C] dark:bg-[#1B1A56] text-gray-200 dark:text-white h-16   ">
+  <nav class=" border border-t-0 border-x-0 border-b h-16 bg-primary text-primary-foreground ">
     <!-- <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4"> -->
     <div
       :class="route.name !== 'login' && route.name !== 'signup' ? ' max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4' : ' w-screen max-w-screen-xl flex flex-wrap items-center justify-end mx-auto p-4'">
       <a v-if="route.name !== 'login' && route.name !== 'signup'" href=""
         class="flex items-center space-x-3 rtl:space-x-reverse">
         <span
-          :class="route.name !== 'login' && route.name !== 'signup' ? 'self-center text-2xl font-semibold whitespace-nowrap text-[#1b1a56] dark:text-white' : 'self-center text-2xl font-semibold whitespace-nowra text-gray-900'">eDirect</span>
+          :class="route.name !== 'login' && route.name !== 'signup' ? 'self-center text-2xl font-semibold whitespace-nowrap  ' : 'self-center text-2xl font-semibold whitespace-nowra'">eDirect</span>
 
       </a>
 
       <div class="flex items-center">
         <button class="flex items-center mr-10" @click="toggleDarkMode">
-          <span v-if="!darkMode" class="material-symbols-outlined text-slate-800  dark:text-white mr-10">dark_mode</span>
-          <span v-else class="material-symbols-outlined  text-slate-800  dark:text-white mr-10">light_mode</span>
+          <span v-if="!darkMode" class="material-symbols-outlined  mr-10">dark_mode</span>
+          <span v-else class="material-symbols-outlined   mr-10">light_mode</span>
         </button>
         <div v-if="route.name !== 'login' && route.name !== 'signup'"
           class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-          <button type="button"
-            class="flex items-center text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-            id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown"
-            data-dropdown-placement="bottom">
+          <button type="button" class="flex items-center text-sm rounded-full md:me-0 focus:ring-4" id="user-menu-button"
+            aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
             <span class="sr-only">Open user menu</span>
             <span class="material-symbols-outlined text-3l ">
               person
@@ -29,17 +27,16 @@
 
           <!-- Dropdown menu -->
           <div
-            class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600"
+            class="z-50 hidden my-4 text-base list-none bg-secondary text-secondary-foreground divide-y  rounded-lg shadow"
             id="user-dropdown">
             <div class="px-4 py-3">
-              <span class="block text-sm text-gray-900 dark:text-white">{{ user?.username }}</span>
-              <span class="block text-sm  text-gray-500 truncate dark:text-gray-400">{{ user?.email }}</span>
+              <span class="block text-sm ">{{ user?.username }}</span>
+              <span class="block text-sm   truncate ">{{ user?.email }}</span>
             </div>
             <ul class="py-2" aria-labelledby="user-menu-button">
               <li>
-                <div class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600">
-                  <button @click="handleSignOut"
-                    class="text-sm text-gray-700 dark:text-gray-200 dark:hover:text-white w-full text-left">
+                <div class="block px-4 py-2 hover:bg-primary hover:text-primary-foreground ">
+                  <button @click="handleSignOut" class="text-sm w-full text-left">
                     Sign out
                   </button>
                 </div>
@@ -69,8 +66,6 @@ const router = useRouter();
 
 let body: HTMLElement | null;
 let darkMode = ref(getDarkMode());
-
-
 
 let user: Ref<DocumentData | null> = ref(null);
 

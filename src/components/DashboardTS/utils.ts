@@ -7,7 +7,7 @@ const capitalizeWords = (str: string) => {
 };
 
 const formatContactNumber = (number: string | number) => {
-	let numStr = String(number);
+	let numStr = String(number).replace(/-/g, '');
 	return numStr.slice(0, 4) + '-' + numStr.slice(4, 7) + '-' + numStr.slice(7);
 };
 
