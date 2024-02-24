@@ -151,6 +151,7 @@ import { initFlowbite } from 'flowbite';
 import { capitalizeWords, formatContactNumber } from './DashboardTS/utils';
 import { auth, db } from '../firebase/init'
 import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, getDoc, query, where, getDocs } from 'firebase/firestore';
+import Swal from 'sweetalert2';
 
 const filterOpen = ref(false);
 const telecoms = ref(['All', 'Globe', 'Smart', 'TNT', 'TM', 'DITO']);
@@ -194,7 +195,14 @@ const updateCustomer = async () => {
     try {
       const querySnapshot = await getDocs(query(collection(db, 'customers'), where('contact_number', '==', formatContactNumber(newCustomer.value.contact_number)), where('added_by', '==', loggedInUserName)));
       if (!querySnapshot.empty) {
-        alert('This number already exists');
+        Swal.fire({
+          icon: 'error',
+          title: '',
+          text: 'This number already exists!',
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          width: '300px',
+        });
         return;
       }
 
@@ -214,8 +222,6 @@ const updateCustomer = async () => {
   }
 };
 
-
-
 const addCustomer = async () => {
   try {
     // Query the database for the contact number added by the current user
@@ -223,7 +229,14 @@ const addCustomer = async () => {
 
     // If the number exists, alert the user and stop the function
     if (!querySnapshot.empty) {
-      alert('This number already exists');
+      Swal.fire({
+        icon: 'error',
+        title: '',
+        text: 'This number already exists!',
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        width: '300px',
+      });
       return;
     }
 
