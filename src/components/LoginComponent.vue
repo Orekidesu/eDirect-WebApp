@@ -14,12 +14,12 @@
             <h1 class="text-xl font-bold leading-tight tracking-tight  md:text-2xl">
               Sign in to your account
             </h1>
-            <form class="space-y-4 md:space-y-6 text-card-foreground" action="" @submit.prevent="handleLogin">
+            <form class="space-y-4 md:space-y-6" action="" @submit.prevent="handleLogin">
               <div>
                 <label for="email" class="block mb-2 text-sm font-medium ">Your
                   email</label>
                 <input v-model="email" type="email" name="email" id="email"
-                  class=" bg-transparent border border-primary sm:text-sm rounded-lg  block w-full p-2.5 focus:ring focus:border-accent"
+                  class="bg-transparent border border-primary sm:text-sm rounded-lg  block w-full p-2.5 focus:ring focus:border-accent"
                   placeholder="****@gmail.com">
               </div>
               <div>

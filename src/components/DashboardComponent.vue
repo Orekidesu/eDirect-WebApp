@@ -2,8 +2,11 @@
   <!-- <div class="flex items-center justify-center my-5 px-20"> -->
 
   <div class="flex items-center justify-center my-5 ">
-    <input v-model="search" class="border-3 h-10  rounded-lg text-sm focus:outline-none" type="search" name="search"
-      placeholder="Search">
+    <input v-model="search"
+      class=" bg-transparent border border-primary sm:text-sm rounded-lg  block p-2.5 focus:ring focus:border-accent "
+      type="search" name="search" placeholder="Search">
+
+
     <div class="relative" style=" z-index: 2;">
       <button class="font-bold rounded" @click="filterOpen = !filterOpen">
         <img src="../assets/filter2.svg" alt="Filter Icon" class="w-8 h-6">
@@ -24,12 +27,13 @@
     <div class="animate-spin rounded-full h-20 w-20 border-t-2 border border-b-2 border-primary">
     </div>
   </div>
-  <div v-else class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 px-15 overflow-y-auto px-14 max-h-screen justify-center">
+  <div v-else
+    class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 px-15 overflow-y-auto px-14 max-h-screen justify-center pb-40">
     <div v-for="(customer, index) in filteredCustomers" :key="index"
       class="rounded-lg p-4 shadow border-2 bg-secondary text-secondary-foreground">
 
       <div class="flex justify-between items-center mb-2">
-        <h2 class="text-2xl font-bold">{{ customer.name }}</h2>
+        <h2 class="text-2xl font-bold">{{ customer.last_name }}<span>, {{ customer.first_name }} </span></h2>
         <div class="relative inline-block text-left">
           <button class=" font-bold py-1 px-2 rounded bg-transparent"
             @click="openIndex = openIndex === index ? null : index" title="edit details">
@@ -51,7 +55,7 @@
       </div>
       <br>
       <p class="">Contact No.: {{ customer.contact_number }}</p>
-      <p class="Telecom">: {{ customer.telecom }}</p>
+      <p class="">Telecom: {{ customer.telecom }}</p>
     </div>
     <div v-if="filteredCustomers.length === 0" class="text-center py-4">
       There's no such customer yet.
@@ -93,11 +97,19 @@
         </div>
         <div class="p-4 md:p-5">
           <form class="space-y-4" @submit.prevent="submitForm">
-            <div>
-              <label for="name" class="block mb-2 text-sm font-medium">Your Name</label>
-              <input v-model="newCustomer.name" type="text" name="name" id="name"
-                class="bg-transparent border border-primary sm:text-sm rounded-lg  block w-full p-2.5 focus:ring focus:border-accent"
-                placeholder="Enter  Name" required />
+            <div class="flex flex-row gap-2">
+              <div>
+                <label for="first_name" class="block mb-2 text-sm font-medium">First Name</label>
+                <input v-model="newCustomer.first_name" type="text" name="name" id="name"
+                  class="bg-transparent border border-primary sm:text-sm rounded-lg  block w-full p-2.5 focus:ring focus:border-accent"
+                  placeholder="Enter  First Name" required />
+              </div>
+              <div>
+                <label for="last_name" class="block mb-2 text-sm font-medium">Last Name</label>
+                <input v-model="newCustomer.last_name" type="text" name="name" id="name"
+                  class="bg-transparent border border-primary sm:text-sm rounded-lg  block w-full p-2.5 focus:ring focus:border-accent"
+                  placeholder="Enter  Last Name" required />
+              </div>
             </div>
             <div>
               <label for="contact_number" class="block mb-2 text-sm font-medium ">Contact
@@ -145,7 +157,7 @@ const telecoms = ref(['All', 'Globe', 'Smart', 'TNT', 'TM', 'DITO']);
 const showModal = ref(false);
 const editingIndex = ref<number | null>(null);
 const openIndex = ref<number | null>(null);
-const newCustomer = ref({ name: '', contact_number: '', telecom: '' });
+const newCustomer = ref({ first_name: '', last_name: '', contact_number: '', telecom: '' });
 const search = ref('');
 const selectedTelecom = ref('All');
 const customers = ref<any[]>([]);
@@ -183,7 +195,8 @@ const updateCustomer = async () => {
       await updateDoc(
         doc(db, 'customers', customers.value[editingIndex.value].id),
         {
-          name: capitalizeWords(newCustomer.value.name), // Capitalize name before updating
+          first_name: capitalizeWords(newCustomer.value.first_name), // Capitalize name before updating
+          last_name: capitalizeWords(newCustomer.value.last_name), // Capitalize name before updating
           contact_number: formatContactNumber(newCustomer.value.contact_number), // Format contact number before updating
           telecom: newCustomer.value.telecom
         }
@@ -200,7 +213,8 @@ const updateCustomer = async () => {
 const addCustomer = async () => {
   try {
     await addDoc(collection(db, 'customers'), {
-      name: capitalizeWords(newCustomer.value.name), // Capitalize name before adding
+      first_name: capitalizeWords(newCustomer.value.first_name), // Capitalize name before adding
+      last_name: capitalizeWords(newCustomer.value.last_name), // Capitalize name before adding
       contact_number: formatContactNumber(newCustomer.value.contact_number), // Format contact number before adding
       telecom: newCustomer.value.telecom,
       added_by: loggedInUserName // Include the logged-in user's username
@@ -215,18 +229,30 @@ const toggleModal = () => {
   if (showModal.value) {
     editingIndex.value = null;
     openIndex.value = null;
-    newCustomer.value = { name: '', contact_number: '', telecom: '' };
+    newCustomer.value = { first_name: '', last_name: '', contact_number: '', telecom: '' };
   }
   showModal.value = !showModal.value;
 };
 
 const filteredCustomers = computed(() => {
-  return customers.value.filter(customer =>
-    (!search.value || customer.name.toLowerCase().includes(search.value.toLowerCase()) ||
-      customer.contact_number.includes(search.value) ||
-      customer.telecom.toLowerCase().includes(search.value.toLowerCase())) &&
-    (selectedTelecom.value === 'All' || customer.telecom === selectedTelecom.value)
-  );
+  return customers.value
+    .filter(customer =>
+      (!search.value || customer.first_name.toLowerCase().includes(search.value.toLowerCase()) || customer.last_name.toLowerCase().includes(search.value.toLowerCase()) ||
+        customer.contact_number.includes(search.value) ||
+        customer.telecom.toLowerCase().includes(search.value.toLowerCase())) &&
+      (selectedTelecom.value === 'All' || customer.telecom === selectedTelecom.value)
+    )
+    .sort((a, b) => {
+      let nameA = a.last_name.toUpperCase(); // ignore upper and lowercase
+      let nameB = b.last_name.toUpperCase(); // ignore upper and lowercase
+      if (nameA < nameB) {
+        return -1;
+      }
+      if (nameA > nameB) {
+        return 1;
+      }
+      return 0; // names must be equal
+    });
 });
 
 onMounted(async () => {
