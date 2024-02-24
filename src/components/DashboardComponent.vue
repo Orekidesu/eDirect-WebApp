@@ -150,7 +150,7 @@ import { onMounted, onUnmounted } from 'vue';
 import { initFlowbite } from 'flowbite';
 import { capitalizeWords, formatContactNumber } from './DashboardTS/utils';
 import { auth, db } from '../firebase/init'
-import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, getDoc, query, where } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, getDoc, query, where, getDocs } from 'firebase/firestore';
 
 const filterOpen = ref(false);
 const telecoms = ref(['All', 'Globe', 'Smart', 'TNT', 'TM', 'DITO']);
@@ -212,6 +212,16 @@ const updateCustomer = async () => {
 
 const addCustomer = async () => {
   try {
+    // Query the database for the contact number
+    const querySnapshot = await getDocs(query(collection(db, 'customers'), where('contact_number', '==', formatContactNumber(newCustomer.value.contact_number))));
+
+    // If the number exists, alert the user and stop the function
+    if (!querySnapshot.empty) {
+      alert('This number already exists in the database.');
+      return;
+    }
+
+    // If the number doesn't exist, add the new customer
     await addDoc(collection(db, 'customers'), {
       first_name: capitalizeWords(newCustomer.value.first_name), // Capitalize name before adding
       last_name: capitalizeWords(newCustomer.value.last_name), // Capitalize name before adding
