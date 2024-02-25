@@ -10,10 +10,10 @@
 
       </a>
 
-      <div class="flex items-center">
-        <button class="flex items-center mr-10" @click="toggleDarkMode">
-          <span v-if="!darkMode" class="material-symbols-outlined  mr-10">dark_mode</span>
-          <span v-else class="material-symbols-outlined   mr-10">light_mode</span>
+      <div class="flex items-center md:gap-10 gap-5">
+        <button class="flex items-center " @click="toggleDarkMode">
+          <span v-if="!darkMode" class="material-symbols-outlined  ">dark_mode</span>
+          <span v-else class="material-symbols-outlined   ">light_mode</span>
         </button>
         <div v-if="route.name !== 'login' && route.name !== 'signup'"
           class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">

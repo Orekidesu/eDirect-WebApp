@@ -1,9 +1,9 @@
 <template>
   <!-- <div class="flex items-center justify-center my-5 px-20"> -->
 
-  <div class="flex items-center justify-center my-5 ">
+  <div class="flex items-center justify-center my-10 ">
     <input v-model="search"
-      class=" bg-transparent border border-primary sm:text-sm rounded-lg  block p-2.5 focus:ring focus:border-accent "
+      class=" bg-transparent border border-primary sm:text-sm rounded-lg  md:min-w-72 block p-2.5 focus:ring focus:border-accent "
       type="search" name="search" placeholder="Search">
 
 
@@ -23,12 +23,12 @@
     </div>
   </div>
   <!-- ================================================ LIST OF CUSTOMERS AREA ================================================  -->
-  <div v-if="isLoading" class="flex justify-center items-center pt-10">
+  <div v-if="isLoading" class="flex justify-center items-center pt-10 ">
     <div class="animate-spin rounded-full h-20 w-20 border-t-2 border border-b-2 border-primary">
     </div>
   </div>
   <div v-else
-    class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 px-15 overflow-y-auto px-14 max-h-screen justify-center pb-40">
+    class="grid sm:grid-cols-2 md:grid-cols-3 gap-4 px-15 overflow-y-auto px-14 max-h-screen md:w-screen justify-center pb-40">
     <div v-for="(customer, index) in filteredCustomers" :key="index"
       class="rounded-lg p-4 shadow border-2 bg-secondary text-secondary-foreground">
 
@@ -38,14 +38,14 @@
           <span>{{ customer.first_name }}</span>
         </h2>
         <div class="relative inline-block text-left">
-          <button class=" font-bold py-1 px-2 rounded bg-transparent"
-            @click="openIndex = openIndex === index ? null : index" title="edit details">
+          <button class=" font-bold py-1  rounded bg-transparent" @click="openIndex = openIndex === index ? null : index"
+            title="edit details">
             <span class="material-symbols-outlined">
               edit
             </span>
           </button>
           <div v-show="openIndex === index"
-            class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg text-secondary-foreground bg-secondary ring-1 ring-black ring-opacity-5">
+            class="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg text-secondary-foreground bg-secondary ring-1 ring-black ring-opacity-5">
 
             <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
               <a href="#" class="block px-4 py-2 text-sm hover:bg-primary hover:text-primary-foreground " role="menuitem"
